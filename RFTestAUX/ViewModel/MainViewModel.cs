@@ -16,7 +16,7 @@ using System.Windows;
 
 namespace RFTestAUX.ViewModel
 {
-  
+
     public class MainViewModel : ViewModelBase
     {
         private object _msgLock = new object();
@@ -30,16 +30,10 @@ namespace RFTestAUX.ViewModel
         private double _realTimeSourceLevel = 0;
         private double _realTimeCurrent = 0;
         private DP832 dp832 = null;
-        private TC720 tc720=null;
+        private TC720 tc720 = null;
 
         public MainViewModel(IDataService dataService)
         {
-            _dataService = dataService;
-            _dataService.GetData(
-                (item, error) =>
-                {
-                   
-                });
             SystemMessageCollection = new ObservableCollection<MessageItem>();
             SystemMessageCollection.CollectionChanged += SystemMessageCollection_CollectionChanged;
             Messenger.Default.Register<string>(this, "ShowError", msg =>
@@ -67,6 +61,8 @@ namespace RFTestAUX.ViewModel
                 });
             });
             StrTotalError = "";
+
+            //LoadConfig
             try
             {
                 ConfigMgr.Instance.LoadConfig();
@@ -75,6 +71,7 @@ namespace RFTestAUX.ViewModel
             }
             catch (Exception ex)
             {
+                MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "发生了错误", MessageBoxButton.OKCancel, MessageBoxImage.Error);
                 ShowError(ex.Message);
             }
         }
@@ -82,30 +79,32 @@ namespace RFTestAUX.ViewModel
         #region private method
         private void ShowError(string strMsg)
         {
-            SystemMessageCollection.Add(new MessageItem()
+            lock (_msgLock)
             {
-                MsgType = EnumMessageType.Error,
-                StrMsg = strMsg
-            });
+                SystemMessageCollection.Add(new MessageItem()
+                {
+                    MsgType = EnumMessageType.Error,
+                    StrMsg = strMsg
+                });
+
+                if (SystemMessageCollection.Count > 20)
+                    SystemMessageCollection.RemoveAt(0);
+            }
+
         }
         private void SystemMessageCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            lock (_msgLock)
+            ErrorCount = SystemMessageCollection.Count();
+            var collect = from msg in SystemMessageCollection where msg.MsgType == EnumMessageType.Error select msg;
+            if (collect != null)
             {
-                if (SystemMessageCollection.Count > 20)
-                    SystemMessageCollection.RemoveAt(0);
-                ErrorCount = SystemMessageCollection.Count();
-                var collect = from msg in SystemMessageCollection where msg.MsgType == EnumMessageType.Error select msg;
-                if (collect != null)
-                {
-                    StrTotalError = $"Infomation ({collect.Count()}) Error";
-                }
+                StrTotalError = $"Infomation ({collect.Count()}) Error";
             }
         }
         private bool InitInstrument()
         {
             dp832 = InstrumentMgr.Instance.FindInstrumentByName("DP832[0]") as DP832;
-            tc720= InstrumentMgr.Instance.FindInstrumentByName("TC720[0]") as TC720;
+            tc720 = InstrumentMgr.Instance.FindInstrumentByName("TC720[0]") as TC720;
             if (dp832 != null)
             {
                 dp832.SetOutput(DP832.CHANNEL.CH3, false);
@@ -120,11 +119,14 @@ namespace RFTestAUX.ViewModel
                 Thread.Sleep(50);
                 dp832.SetProtection(DP832.OPMODE.OVP, DP832.CHANNEL.CH1, 3.4);
             }
+            //if (tc720 != null)
+            //{
+            //    tc720.WriteTemperature(Channel.CH1, ParaModelConfig.Temperature);
+            //}
 
-
-            return dp832 != null && tc720 != null ;
+            return dp832 != null && tc720 != null;
         }
-        
+
         #endregion
 
         #region Property
@@ -132,7 +134,8 @@ namespace RFTestAUX.ViewModel
         {
             get { return _totalError; }
 
-            set {
+            set
+            {
                 if (_totalError != value)
                 {
                     _totalError = value;
@@ -202,7 +205,7 @@ namespace RFTestAUX.ViewModel
                 }
             }
         }
-       
+
 
         #endregion
 
@@ -250,19 +253,21 @@ namespace RFTestAUX.ViewModel
                                 break;
                         }
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
-                        Messenger.Default.Send<string>($"{para[0]}的时候发生错误:{ex.Message}","ShowError");
+                        Messenger.Default.Send<string>($"{para[0]}的时候发生错误:{ex.Message}", "ShowError");
                     }
                 });
             }
         }
         public RelayCommand WindowLoadedCommand
         {
+
             get
             {
                 return new RelayCommand(() =>
                 {
+                    
                     try
                     {
                         if (MonitorTask == null || MonitorTask.IsCanceled || MonitorTask.IsCompleted)
@@ -273,7 +278,7 @@ namespace RFTestAUX.ViewModel
                                 while (!cts.Token.IsCancellationRequested)
                                 {
                                     Thread.Sleep(100);
-                                    if(tc720 != null)
+                                    if (tc720 != null)
                                         RealTimeTemperature = tc720.ReadTemperature(Channel.CH1);
                                     if (dp832 != null)
                                     {
@@ -282,16 +287,35 @@ namespace RFTestAUX.ViewModel
                                         RealTimeCurrent = dp832.MeasureValue[1];
                                     }
                                 }
-                                    
+
                             }, cts.Token);
                         }
                         MonitorTask.Start();
-                        
+
                     }
                     catch (Exception ex)
                     {
                         throw new Exception(ex.Message);
                     }
+                });
+            }
+        }
+        public RelayCommand WindowClosingCommand
+        {
+            get
+            {
+                return new RelayCommand(() =>
+                {
+                    if (cts != null)
+                    {
+                        cts.Cancel();
+                    }
+                    if (MonitorTask != null)
+                    {
+                        MonitorTask.Wait();
+                        cts = null;
+                    }
+
                 });
             }
         }
@@ -315,7 +339,7 @@ namespace RFTestAUX.ViewModel
                 });
             }
         }
-        
+
         #endregion
 
     }

@@ -5,24 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ignore="http://www.galasoft.ch/ignore"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+  
         xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
         xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
         xmlns:cls="clr-namespace:RFTestAUX.Classes"
         mc:Ignorable="d ignore"
         Height="700"
-        Width="500"
+        Width="700"
         Title="MVVM Light Application"
         DataContext="{Binding Main, Source={StaticResource Locator}}"
         WindowStyle="None"
         Background="Transparent" AllowsTransparency="true" 
         ResizeMode="NoResize"
         >
-    <i:Interaction.Triggers>
+    <!--<i:Interaction.Triggers>       
         <i:EventTrigger EventName="Loaded">
             <cmd:EventToCommand Command="{Binding WindowLoadedCommand}"/>
         </i:EventTrigger>
-    </i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <cmd:EventToCommand Command="{Binding WindowClosingCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>-->
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -49,9 +53,10 @@
                             <RowDefinition Height="100"/>
                             <RowDefinition Height="100"/>
                             <RowDefinition Height="100"/>
+                            <RowDefinition Height="100"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <materialDesign:ColorZone Grid.ColumnSpan="2" Mode="Accent" Padding="6" VerticalAlignment="Center">
+                        <materialDesign:ColorZone Grid.ColumnSpan="3" Mode="Accent" Padding="6" VerticalAlignment="Center">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -68,24 +73,26 @@
                                 </Button>
                             </Grid>
                         </materialDesign:ColorZone>
-
-                        <TextBlock FontSize="25" Text="Current Temp" Grid.Row="1" VerticalAlignment="Center" Margin="20"/>
-                        <TextBlock FontSize="25" Text="{Binding RealTimeTemperature, Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Blue"/>
+                        <TextBlock FontSize="25" Text="SetTem(℃)" Grid.Row="1" VerticalAlignment="Center" Margin="20"/>
+                        <TextBlock FontSize="25" Text="{Binding ParaModelConfig.Temperature,Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Blue"/>
                         
-                        <TextBlock FontSize="25" Text="Source(V)" Grid.Row="2" VerticalAlignment="Center" Margin="20"/>
-                        <TextBlock FontSize="25" Text="{Binding RealTimeSource, Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Blue"/>
-
-                        <TextBlock FontSize="25" Text="Current(mA)" Grid.Row="3" VerticalAlignment="Center" Margin="20"/>
-                        <TextBlock FontSize="25" Text="{Binding RealTimeCurrent,Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Blue"/>
+                        <TextBlock FontSize="25" Text="CurTem(℃)" Grid.Row="2" VerticalAlignment="Center" Margin="20"/>
+                        <TextBlock FontSize="25" Text="{Binding RealTimeTemperature, Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Blue"/>
                         
-                        <TextBlock VerticalAlignment="Center" Text="Source Switch" Grid.Row="4" FontSize="25" Margin="20"/>
-                        <ToggleButton Grid.Row="4" Grid.Column="1" Style="{StaticResource MaterialDesignActionAccentToggleButton}" IsChecked="{Binding SourceState,Mode=OneWay}" ToolTip="Open/Close" Command="{Binding OpenSourceCommand}" CommandParameter="{Binding IsChecked,RelativeSource={RelativeSource Mode=Self}}">
+                        <TextBlock FontSize="25" Text="Source(V)" Grid.Row="3" VerticalAlignment="Center" Margin="20"/>
+                        <TextBlock FontSize="25" Text="{Binding RealTimeSource, Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Blue"/>
+
+                        <TextBlock FontSize="25" Text="Current(mA)" Grid.Row="4" VerticalAlignment="Center" Margin="20"/>
+                        <TextBlock FontSize="25" Text="{Binding RealTimeCurrent,Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Blue"/>
+                        
+                        <TextBlock VerticalAlignment="Center" Text="Source Switch" Grid.Row="5" FontSize="25" Margin="20"/>
+                        <ToggleButton Grid.Row="5" Grid.Column="1" Style="{StaticResource MaterialDesignActionAccentToggleButton}" IsChecked="{Binding SourceState,Mode=OneWay}" ToolTip="Open/Close" Command="{Binding OpenSourceCommand}" CommandParameter="{Binding IsChecked,RelativeSource={RelativeSource Mode=Self}}">
                             <ToggleButton.Content>
                                 <Image Source="/RFTestAUX;component/Image/Disconnected.png"/>
                             </ToggleButton.Content>
                         </ToggleButton>
 
-                        <Expander ExpandDirection="Left" Grid.Column="2" Grid.RowSpan="6">
+                        <Expander ExpandDirection="Left" Grid.Row="1" Grid.Column="2" Grid.RowSpan="6">
                             <Expander.Header>
                                 <TextBlock Text="{Binding StrTotalError}" Foreground="{Binding ErrorCount,Converter={StaticResource Number2Brush}}" RenderTransformOrigin=".5,.5" FontSize="20">
                                     <TextBlock.LayoutTransform>

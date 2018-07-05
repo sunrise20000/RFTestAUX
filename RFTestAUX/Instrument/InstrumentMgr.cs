@@ -33,9 +33,9 @@ namespace RFTestAUX.Instrument
         {
             if (strName == null)
                 return null;
-            foreach (var it in instrumentDic)
-                if (it.Key == strName)
-                    return it.Value;
+            var ins = from it in instrumentDic where it.Key == strName select it;
+            if (ins != null && ins.Count() > 0)
+                return ins.ElementAt(0).Value;
             return null;
         }
         public InstrumentBase FindInstrumentByIndex(int index)

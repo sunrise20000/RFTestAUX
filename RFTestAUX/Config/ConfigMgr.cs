@@ -30,8 +30,8 @@ namespace RFTestAUX.Config
         }
 
 
-        private readonly string File_HardwareCfg = "Config\\HardwareCfg.json";
-        private readonly string File_ParaCfg = "Config\\ParaCfg.json";
+        private readonly string File_HardwareCfg = Directory.GetCurrentDirectory()+ "\\Config\\HardwareCfg.json";
+        private readonly string File_ParaCfg = Directory.GetCurrentDirectory() + "\\Config\\ParaCfg.json";
         public HardwareCfgManager HardwareCfgMgr = null;
         public ParaManager ParaMgr = null;
         public void LoadConfig()

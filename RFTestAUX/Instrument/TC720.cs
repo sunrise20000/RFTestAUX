@@ -29,7 +29,6 @@ namespace RFTestAUX.Instrument
             }
             return true;
         }
-
         public override bool Init()
         {
             try
@@ -64,6 +63,7 @@ namespace RFTestAUX.Instrument
             }
             catch (Exception ex)
             {
+
                 return false;
             }
         }
@@ -120,9 +120,7 @@ namespace RFTestAUX.Instrument
         {
             int sum = 0;
             foreach (var it in ByteList)
-            {
                 sum += it;
-            }
             string h = string.Format("{0:X}", sum & 0xF).ToLower();
             string l = string.Format("{0:X}", (sum >> 4) & 0xF).ToLower();
             return new Byte[2] { (byte)h[0], (byte)l[0] };
@@ -132,16 +130,9 @@ namespace RFTestAUX.Instrument
         {
             int sum = 0;
             foreach (var it in Str)
-            {
-#if TEST
-                Console.WriteLine((byte)it);
-#endif
                 sum += (byte)it;
-            }
-
             string h = string.Format("{0:X}", sum & 0xF).ToLower();
             string l = string.Format("{0:X}", (sum >> 4) & 0xF).ToLower();
-
             return new Byte[2] { (byte)h[0], (byte)l[0] };
         }
     }
