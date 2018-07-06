@@ -23,6 +23,9 @@
             <Converter:MsgType2Image x:Key="MsgType2Image"/>
             <Converter:Double2String x:Key="Double2String"/>
             <Converter:Number2Brush x:Key="Number2Brush"/>
+            <Converter:Bool2Brush x:Key="Bool2Brush"/>
+            <Converter:Int2String x:Key="Int2String"/>
+            <Converter:Int2Visibility x:Key="Int2Visibility"/>
         </ResourceDictionary>
     </Application.Resources>
     

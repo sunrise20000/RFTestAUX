@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-
+using System.Windows.Threading;
 
 namespace RFTestAUX.ViewModel
 {
@@ -20,18 +20,22 @@ namespace RFTestAUX.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private object _msgLock = new object();
-        private readonly IDataService _dataService;
+        private double _temperatureBand = 0;
+        private int _stabilizationTime = 0;
         private string _totalError = "";
         private ParaModel _paraModelConfig = null;
         private int _errorCount = 0;
         private CancellationTokenSource cts = null;
+  
         private Task MonitorTask = null;
         private double _realTimeTemperature = 0;
         private double _realTimeSourceLevel = 0;
         private double _realTimeCurrent = 0;
+        private bool _temperatureIsOk = false;
         private DP832 dp832 = null;
         private TC720 tc720 = null;
-
+        private DispatcherTimer MonitorTimer = new DispatcherTimer();
+        private int nTickCount = 0;
         public MainViewModel(IDataService dataService)
         {
             SystemMessageCollection = new ObservableCollection<MessageItem>();
@@ -61,7 +65,7 @@ namespace RFTestAUX.ViewModel
                 });
             });
             StrTotalError = "";
-
+       
             //LoadConfig
             try
             {
@@ -74,7 +78,15 @@ namespace RFTestAUX.ViewModel
                 MessageBox.Show($"{ex.Message}\r\n{ex.StackTrace}", "发生了错误", MessageBoxButton.OKCancel, MessageBoxImage.Error);
                 ShowError(ex.Message);
             }
+            MonitorTimer.Tick += MonitorTimer_Tick;
+            MonitorTimer.Interval = new TimeSpan(0, 0, 1);
+            MonitorTimer.Start();
         }
+        ~MainViewModel()
+        {
+            MonitorTimer.Stop();
+        }
+       
 
         #region private method
         private void ShowError(string strMsg)
@@ -126,7 +138,24 @@ namespace RFTestAUX.ViewModel
 
             return dp832 != null && tc720 != null;
         }
-
+        private void MonitorTimer_Tick(object sender, EventArgs e)
+        {
+            if (RealTimeTemperature >= ParaModelConfig.Temperature - ParaModelConfig.TemperatureBand && RealTimeTemperature <= ParaModelConfig.Temperature + ParaModelConfig.TemperatureBand)
+            {
+                if (++TickCount > ParaModelConfig.StabilizationTime)
+                {              
+                    TemperatureIsOk = true;
+                    TickCount = ParaModelConfig.StabilizationTime + 1; //防止一直加
+                }
+                else
+                    TemperatureIsOk = false;
+            }
+            else
+            {
+                TickCount = 0;
+                TemperatureIsOk = false;
+            }
+        }
         #endregion
 
         #region Property
@@ -205,8 +234,56 @@ namespace RFTestAUX.ViewModel
                 }
             }
         }
-
-
+        public double TemperatureBand
+        {
+            get { return _temperatureBand; }
+            set
+            {
+                if (_temperatureBand != value)
+                {
+                    _temperatureBand = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        public int StabilizationTime
+        {
+            get { return _stabilizationTime; }
+            set
+            {
+                if (_stabilizationTime != value)
+                {
+                    _stabilizationTime = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        public bool TemperatureIsOk
+        {
+            get { return _temperatureIsOk; }
+            set
+            {
+                if (_temperatureIsOk != value)
+                {
+                    if(value)
+                        MessageBox.Show("温度已经稳定，可以进行测试!", "RFTEstAux", MessageBoxButton.OK, MessageBoxImage.Information);
+                    _temperatureIsOk = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        public int TickCount
+        {
+            get { return nTickCount; }
+            set
+            {
+                if (nTickCount != value)
+                {
+                    nTickCount = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region >>>>Command
@@ -238,6 +315,9 @@ namespace RFTestAUX.ViewModel
                                 ParaModelConfig.Temperature = double.Parse(para[1]);
                                 ParaModelConfig.SourceLevel = double.Parse(para[2]);
                                 ParaModelConfig.CMPL = double.Parse(para[3]);
+                                ParaModelConfig.TemperatureBand = double.Parse(para[4]);
+                                ParaModelConfig.StabilizationTime = int.Parse(para[5]);
+
                                 if (dp832 != null)
                                 {
                                     dp832.SetVoltLevel(DP832.CHANNEL.CH1, ParaModelConfig.SourceLevel);

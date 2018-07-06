@@ -38,7 +38,7 @@ namespace RFTestAUX
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var vm = DataContext as MainViewModel;
-            vm.ParaOperateCommand.Execute($"Apply&{EditTemp.Text}&{EditSource.Text}&{EditCmpl.Text}");
+            vm.ParaOperateCommand.Execute($"Apply&{EditTemp.Text}&{EditSource.Text}&{EditCmpl.Text}&{EditBand.Text}&{EditTime.Text}");
         }
     }
 }

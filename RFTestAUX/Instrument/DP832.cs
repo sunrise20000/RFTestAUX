@@ -76,7 +76,12 @@ namespace RFTestAUX.Instrument
                         if (comPort.IsOpen)
                             comPort.Close();
                         comPort.Open();
-                        return comPort.IsOpen;
+                        if (comPort.IsOpen)
+                            Fetch(CHANNEL.CH1);
+                        else
+                            return false;
+                        return true;
+                          
                     }
                     return false;
                 }

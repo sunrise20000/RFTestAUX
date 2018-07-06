@@ -7,56 +7,32 @@ using System.Threading.Tasks;
 
 namespace RFTestAUX.Model
 {
-    public class ParaModel : INotifyPropertyChanged
+    public class ParaModel
     {
-        private double _temperature = -5;
-        private double _sourceLevel = 3.3;
-        private double _cmpl = 0.3;
         public double Temperature
         {
-            set
-            {
-                if (_temperature != value)
-                {
-                    _temperature = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Temperature"));
-                }
-            }
-            get
-            {
-                return _temperature;
-            }
+            get;
+            set;
         }
         public double SourceLevel
         {
-            set
-            {
-                if (_sourceLevel != value)
-                {
-                    _sourceLevel = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SourceLevel"));
-                }
-            }
-            get
-            {
-                return _sourceLevel;
-            }
+            get;
+            set;
         }
         public double CMPL
         {
-            set
-            {
-                if (_cmpl != value)
-                {
-                    _cmpl = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CMPL"));
-                }
-            }
-            get
-            {
-                return _cmpl;
-            }
+            set;
+            get;
         }
-        public event PropertyChangedEventHandler PropertyChanged;
+        public double TemperatureBand
+        {
+            get;
+            set;      
+        }
+        public int StabilizationTime
+        {
+            get;
+            set;   
+        }
     }
 }

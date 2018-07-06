@@ -75,9 +75,16 @@
                         </materialDesign:ColorZone>
                         <TextBlock FontSize="25" Text="SetTem(℃)" Grid.Row="1" VerticalAlignment="Center" Margin="20"/>
                         <TextBlock FontSize="25" Text="{Binding ParaModelConfig.Temperature,Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Blue"/>
-                        
-                        <TextBlock FontSize="25" Text="CurTem(℃)" Grid.Row="2" VerticalAlignment="Center" Margin="20"/>
-                        <TextBlock FontSize="25" Text="{Binding RealTimeTemperature, Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Blue"/>
+
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontSize="25" Text="CurTem(℃)" Grid.Column="0" VerticalAlignment="Center" Margin="20" Foreground="{Binding TemperatureIsOk,Converter={StaticResource Bool2Brush}}"/>
+                            <TextBlock FontSize="15" Grid.Column="1" Text="{Binding TickCount,Converter={StaticResource Int2String},Mode=OneWay}" Visibility="{Binding TickCount,Converter={StaticResource Int2Visibility}}" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+                        </Grid>
+                        <TextBlock FontSize="25" Text="{Binding RealTimeTemperature, Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{Binding TemperatureIsOk,Converter={StaticResource Bool2Brush}}"/>
                         
                         <TextBlock FontSize="25" Text="Source(V)" Grid.Row="3" VerticalAlignment="Center" Margin="20"/>
                         <TextBlock FontSize="25" Text="{Binding RealTimeSource, Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Blue"/>
@@ -124,7 +131,7 @@
                 <materialDesign:Flipper.BackContent>
                     <Grid Background="AliceBlue">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="100" />
+                            <RowDefinition Height="50" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <materialDesign:ColorZone Grid.Row="0" Mode="Accent" VerticalAlignment="Center">
@@ -138,18 +145,22 @@
                                 </Button>
                             </Grid>
                         </materialDesign:ColorZone>
-                        <Grid Grid.Row="1"  HorizontalAlignment="Center" VerticalAlignment="Center" Width="400" Height="400">
+                        <Grid Grid.Row="1"  HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="100"/>
-                                    <RowDefinition Height="100"/>
-                                    <RowDefinition Height="100"/>
-                                    <RowDefinition Height="100"/>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="80"/>
+                                    <RowDefinition Height="80"/>
                                 </Grid.RowDefinitions>
                                 <TextBox x:Name="EditTemp" Grid.Row="0" Text="{Binding ParaModelConfig.Temperature,Converter={StaticResource Double2String},NotifyOnValidationError=True, Mode=OneWay}" materialDesign:HintAssist.Hint="Temperature"  materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.FloatingOffset="1,-20" FontSize="20" Margin="20,0,0,0"/>
                                 <TextBox x:Name="EditSource" Grid.Row="1" materialDesign:HintAssist.Hint="Source(V)" Text="{Binding ParaModelConfig.SourceLevel,Converter={StaticResource Double2String}, Mode=OneWay}" materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.FloatingOffset="1,-20" FontSize="20" Margin="20,0,0,0"/>
                                 <TextBox x:Name="EditCmpl" Grid.Row="2" materialDesign:HintAssist.Hint="CMPL(A)" Text="{Binding ParaModelConfig.CMPL,Converter={StaticResource Double2String},Mode=OneWay}" materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.FloatingOffset="1,-20" FontSize="20" Margin="20,0,0,0"/>
-                                <Grid Grid.Row="3" VerticalAlignment="Center">
+                                <TextBox x:Name="EditBand" Grid.Row="3" materialDesign:HintAssist.Hint="Temperature band(℃)" Text="{Binding ParaModelConfig.TemperatureBand,Converter={StaticResource Double2String},Mode=OneWay}" materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.FloatingOffset="1,-20" FontSize="20" Margin="20,0,0,0"/>
+                                <TextBox x:Name="EditTime" Grid.Row="4" materialDesign:HintAssist.Hint=" stabilization time(S)" Text="{Binding ParaModelConfig.StabilizationTime,Converter={StaticResource Int2String},Mode=OneWay}" materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.FloatingOffset="1,-20" FontSize="20" Margin="20,0,0,0"/>
+                                <Grid Grid.Row="5" VerticalAlignment="Center">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
