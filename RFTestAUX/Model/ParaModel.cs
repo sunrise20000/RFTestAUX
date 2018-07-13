@@ -7,12 +7,20 @@ using System.Threading.Tasks;
 
 namespace RFTestAUX.Model
 {
-    public class ParaModel
+    public class ParaModel  : INotifyPropertyChanged
     {
+        private double _temperature = 0.0;
         public double Temperature
         {
-            get;
-            set;
+            get { return _temperature; }
+            set
+            {
+                if (_temperature != value)
+                {
+                    _temperature = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Temperature"));
+                }
+            }
         }
         public double SourceLevel
         {
@@ -34,5 +42,7 @@ namespace RFTestAUX.Model
             get;
             set;   
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

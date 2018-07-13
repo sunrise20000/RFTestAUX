@@ -17,7 +17,8 @@
         WindowStyle="None"
         Background="Transparent" AllowsTransparency="true" 
         ResizeMode="NoResize"
-        >
+        Loaded="Window_Loaded"
+        Closing="Window_Closing">
     <!--<i:Interaction.Triggers>       
         <i:EventTrigger EventName="Loaded">
             <cmd:EventToCommand Command="{Binding WindowLoadedCommand}"/>
@@ -87,9 +88,9 @@
                         <TextBlock FontSize="25" Text="{Binding RealTimeTemperature, Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{Binding TemperatureIsOk,Converter={StaticResource Bool2Brush}}"/>
                         
                         <TextBlock FontSize="25" Text="Source(V)" Grid.Row="3" VerticalAlignment="Center" Margin="20"/>
-                        <TextBlock FontSize="25" Text="{Binding RealTimeSource, Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Blue"/>
+                        <TextBlock FontSize="25" Text="{Binding RealTimeSourceLevel, Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Blue"/>
 
-                        <TextBlock FontSize="25" Text="Current(mA)" Grid.Row="4" VerticalAlignment="Center" Margin="20"/>
+                        <TextBlock FontSize="25" Text="Current(A)" Grid.Row="4" VerticalAlignment="Center" Margin="20"/>
                         <TextBlock FontSize="25" Text="{Binding RealTimeCurrent,Converter={StaticResource Double2String},Mode=OneWay}" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Blue"/>
                         
                         <TextBlock VerticalAlignment="Center" Text="Source Switch" Grid.Row="5" FontSize="25" Margin="20"/>

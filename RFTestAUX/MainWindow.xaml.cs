@@ -40,5 +40,16 @@ namespace RFTestAUX
             var vm = DataContext as MainViewModel;
             vm.ParaOperateCommand.Execute($"Apply&{EditTemp.Text}&{EditSource.Text}&{EditCmpl.Text}&{EditBand.Text}&{EditTime.Text}");
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            (DataContext as MainViewModel).WindowLoadedCommand.Execute(null);
+
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            (DataContext as MainViewModel).WindowClosingCommand.Execute(null);
+        }
     }
 }

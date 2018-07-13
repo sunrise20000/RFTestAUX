@@ -32,7 +32,7 @@ namespace RFTestAUX.ViewModel
         private double _realTimeSourceLevel = 0;
         private double _realTimeCurrent = 0;
         private bool _temperatureIsOk = false;
-        private DP832 dp832 = null;
+        private DP832A dp832 = null;
         private TC720 tc720 = null;
         private DispatcherTimer MonitorTimer = new DispatcherTimer();
         private int nTickCount = 0;
@@ -115,21 +115,21 @@ namespace RFTestAUX.ViewModel
         }
         private bool InitInstrument()
         {
-            dp832 = InstrumentMgr.Instance.FindInstrumentByName("DP832[0]") as DP832;
+            dp832 = InstrumentMgr.Instance.FindInstrumentByName("DP832A[0]") as DP832A;
             tc720 = InstrumentMgr.Instance.FindInstrumentByName("TC720[0]") as TC720;
             if (dp832 != null)
             {
-                dp832.SetOutput(DP832.CHANNEL.CH3, false);
+                dp832.SetOutput(DP832A.CHANNEL.CH3, false);
                 Thread.Sleep(100);
-                dp832.SetOutput(DP832.CHANNEL.CH2, false);
+                dp832.SetOutput(DP832A.CHANNEL.CH2, false);
                 Thread.Sleep(100);
-                dp832.SetOutput(DP832.CHANNEL.CH1, false);
+                dp832.SetOutput(DP832A.CHANNEL.CH1, false);
                 Thread.Sleep(100);
 
                 //设置过流保护
-                dp832.SetProtection(DP832.OPMODE.OCP, DP832.CHANNEL.CH1, ParaModelConfig.CMPL);
+                dp832.SetProtection(DP832A.OPMODE.OCP, DP832A.CHANNEL.CH1, ParaModelConfig.CMPL);
                 Thread.Sleep(50);
-                dp832.SetProtection(DP832.OPMODE.OVP, DP832.CHANNEL.CH1, 3.4);
+                dp832.SetProtection(DP832A.OPMODE.OVP, DP832A.CHANNEL.CH1, 3.4);
             }
             //if (tc720 != null)
             //{
@@ -293,7 +293,7 @@ namespace RFTestAUX.ViewModel
             {
                 return new RelayCommand<bool>(bChecked =>
                 {
-                    if (!(dp832 != null && dp832.SetOutput(DP832.CHANNEL.CH1, bChecked)))
+                    if (!(dp832 != null && dp832.SetOutput(DP832A.CHANNEL.CH1, bChecked)))
                     {
                         ShowError(string.Format("{0}通道{1}失败", bChecked ? "打开" : "关闭", DP832.CHANNEL.CH1.ToString()));
                     }
@@ -320,8 +320,8 @@ namespace RFTestAUX.ViewModel
 
                                 if (dp832 != null)
                                 {
-                                    dp832.SetVoltLevel(DP832.CHANNEL.CH1, ParaModelConfig.SourceLevel);
-                                    dp832.SetProtection(DP832.OPMODE.OCP, DP832.CHANNEL.CH1, ParaModelConfig.CMPL);
+                                    dp832.SetVoltLevel(DP832A.CHANNEL.CH1, ParaModelConfig.SourceLevel);
+                                    dp832.SetProtection(DP832A.OPMODE.OCP, DP832A.CHANNEL.CH1, ParaModelConfig.CMPL);
                                 }
                                 if (tc720 != null)
                                     tc720.WriteTemperature(Channel.CH1, ParaModelConfig.Temperature);
@@ -362,8 +362,8 @@ namespace RFTestAUX.ViewModel
                                         RealTimeTemperature = tc720.ReadTemperature(Channel.CH1);
                                     if (dp832 != null)
                                     {
-                                        RealTimeSourceLevel = dp832.GetVoltLevel(DP832.CHANNEL.CH1);
-                                        dp832.Fetch(DP832.CHANNEL.CH1);
+                                        RealTimeSourceLevel = dp832.GetVoltLevel(DP832A.CHANNEL.CH1);
+                                        dp832.Fetch(DP832A.CHANNEL.CH1);
                                         RealTimeCurrent = dp832.MeasureValue[1];
                                     }
                                 }

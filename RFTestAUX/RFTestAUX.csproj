@@ -137,6 +137,7 @@
     <Compile Include="Converter\MsgType2Image.cs" />
     <Compile Include="Converter\Number2Brush.cs" />
     <Compile Include="Design\DesignDataService.cs" />
+    <Compile Include="Instrument\DP832A.cs" />
     <Compile Include="Instrument\DP832.cs" />
     <Compile Include="Instrument\InstrumentBase.cs" />
     <Compile Include="Instrument\InstrumentMgr.cs" />

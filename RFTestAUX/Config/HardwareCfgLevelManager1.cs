@@ -22,7 +22,11 @@ namespace RFTestAUX.Communication
 
 
     }
+    public class DP832AConfig : HardwareCfgLevelManager1
+    {
 
+
+    }
     public class ComportCfg
     {
         public string PortName { get; set; }

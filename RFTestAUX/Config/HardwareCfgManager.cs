@@ -10,7 +10,7 @@ namespace RFTestAUX.Communication
     {
         public DP832Config[] DP832s { get; set; }
         public TC720Config[] TC720s { get; set; }
-
+        public DP832AConfig[] DP832As { get; set; }
         public ComportCfg[] Comports { get; set; }
         public EtherNetCfg[] EtherNets { get; set; }
         public NIVasaCfg[] NIVisas { get; set; }
